@@ -10,7 +10,7 @@ const User = new Schema({
     role: { type: String, enum: ['Creator', 'Brand', 'Agency', 'admin'], default: 'Creator' },
     handle: { type: String, required: true, unique: true },
     links: [{
-        url: { type: String, default: 'www.google.com' },
+        url: { type: String },
         title: { type: String },
         icon: { type: String },
     }],
