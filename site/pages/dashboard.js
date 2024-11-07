@@ -3,11 +3,14 @@ import LinkBox from '@/components/LinkBox';
 import UserHeader from '@/components/UserHeader';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import UserContext from '@/context/userContext';
+import { useContext } from 'react';
 
 const Dashboard = () => {
     const [data, setData] = useState(null);
     const [error, setError] = useState(null); // Track errors
-
+    const { setUserData } = useContext(UserContext);
+    
     useEffect(() => {
         const token = localStorage.getItem('LinkHubToken');
         if (!token) {
@@ -28,6 +31,7 @@ const Dashboard = () => {
                 toast.error(response.message || 'Failed to load dashboard data');
             } else {
                 setData(response.userData);
+                setUserData(response.userData);
                 localStorage.setItem('userHandle', response.userData.handle);
                 toast.success(response.message);
             }
@@ -49,7 +53,7 @@ const Dashboard = () => {
     return (
         <>
             <div>
-                <UserHeader data={data} />
+                <UserHeader />
                 <main>
                     <section className="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
                         <LinkBox lbTitle="Links" lbNumber={data.links} lbSvg="url" lbTheme="red" />

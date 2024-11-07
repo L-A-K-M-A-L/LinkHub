@@ -29,6 +29,7 @@ const Handle = () => {
                         toast.error(data.error);
                     } else if (data.status === 'success') {
                         setData(data.userData);
+                        setSocial(data.socials);
                         setUserFound(true);
                     }
                 })
@@ -40,23 +41,23 @@ const Handle = () => {
     }, [router.query]);
 
     // Grab social link from db
-    useEffect(()=>{
-        if (router.query?.handle) {
-            fetch(`http://localhost:8080/get/socials/${router.query.handle}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === 'error') {
-                        toast.error(data.error);
-                    } else if (data.status === 'success') {
-                        setSocial(data.socials);
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    toast.error('An error occurred while fetching data.');
-                });
-        } 
-    }, [router.query]);
+    // useEffect(()=>{
+    //     if (router.query?.handle) {
+    //         fetch(`http://localhost:8080/get/socials/${router.query.handle}`)
+    //             .then(res => res.json())
+    //             .then(data => {
+    //                 if (data.status === 'error') {
+    //                     toast.error(data.error);
+    //                 } else if (data.status === 'success') {
+    //                     setSocial(data.socials);
+    //                 }
+    //             })
+    //             .catch(err => {
+    //                 console.error(err);
+    //                 toast.error('An error occurred while fetching data.');
+    //             });
+    //     } 
+    // }, [router.query]);
 
     if (!userFound) {
         return (

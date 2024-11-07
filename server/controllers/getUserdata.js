@@ -18,7 +18,9 @@ const getUserData = async ( req, res ) =>{
             links : user.links
         }
 
-        return res.json({ message : 'found', userData, status: 'success' });
+        const socials  = user.socialMedia;
+
+        return res.json({ message : 'found', userData, socials,status: 'success' });
     }catch(err){
         console.log(err);
 

@@ -1,17 +1,58 @@
+import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import UserContext from '@/context/userContext';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const UserHeader = ({ data }) => {
-    console.log("UserHeader received data:", data); // Debug data
+const UserHeader = () => {
 
-    const { name = 'Guest', role = 'User', avatar = 'https://cdn-icons-png.flaticon.com/128/924/924874.png', handle = '', links = 0 } = data || {};
+    // const { name = 'Guest', role = 'User', avatar = 'https://cdn-icons-png.flaticon.com/128/924/924874.png', handle = '', links = 0 } = data || {};
     const router = useRouter();
-    
+
     const handleLogOut = () => {
         localStorage.removeItem('LinkHubToken');
         router.push('/login');
     };
+
+    const { userData ,setUserData } = useContext(UserContext);
     
+    const {role = 'User', avatar = 'https://cdn-icons-png.flaticon.com/128/924/924874.png', handle = '' } = userData || {};
+    const [data, setData] = useState(null);
+    const [error, setError] = useState(null); // Track errors
+    // const { setUserData } = useContext(UserContext);
+
+    useEffect(() => {
+        const token = localStorage.getItem('LinkHubToken');
+        if (!token) {
+            window.location.href = "/login";
+            return;
+        }
+
+        fetch('http://localhost:8080/data/dashboard', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tokenMail: token })
+        })
+            .then(res => res.json())
+            .then(response => {
+                console.log("Dashboard API response:", response); // Debug API response
+                if (response.status === 'error') {
+                    setError(response.message || 'An error occurred');
+                    toast.error(response.message || 'Failed to load dashboard data');
+                } else {
+                    setData(response.userData);
+                    setUserData(response.userData);
+                    localStorage.setItem('userHandle', response.userData.handle);
+                    toast.success(response.message);
+                }
+            })
+            .catch(err => {
+                console.error("Fetch Error:", err);
+                setError('Failed to load user data.');
+            });
+    }, []);
+
     return (
         <>
             <header className="flex flex-row justify-between items-center">
@@ -27,22 +68,25 @@ const UserHeader = ({ data }) => {
                                 Edit Profile
                             </button>
                         </div>
-                        <div className="flex flex-row">
-                            <div className="inline-flex mr-5 text-right items-center bg-gray-200 px-5 py-2 rounded-lg">
-                                <div className="text-xs md:text-md flex flex-col">
-                                    <span className="font-bold">{handle}</span>
-                                    <span>{role} Pack</span>
+                        <Link href={`http://localhost:3000/${handle}`}>
+                            <div className="flex flex-row">
+                                <div className="inline-flex mr-5 text-right items-center bg-gray-200 px-5 py-2 rounded-lg">
+                                    <div className="text-xs md:text-md flex flex-col">
+                                        <span className="font-bold">{handle}</span>
+                                        <span>{role} Pack</span>
+                                    </div>
+                                    <img className="w-10 ml-5" src={avatar} alt="User Avatar" />
                                 </div>
-                                <img className="w-10 ml-5" src={avatar} alt="User Avatar" />
+                                <img className="w-6 mr-5 cursor-pointer" src="/svg/notification.svg" alt="Notifications" />
+                                <img className="w-6 mr-5 cursor-pointer" src="/svg/logout.svg" alt="Logout" onClick={handleLogOut} />
                             </div>
-                            <img className="w-6 mr-5 cursor-pointer" src="/svg/notification.svg" alt="Notifications" />
-                            <img className="w-6 mr-5 cursor-pointer" src="/svg/logout.svg" alt="Logout" onClick={handleLogOut} />
-                        </div>
+                        </Link>
                     </>
                 ) : (
                     <p>Loading user information...</p>
                 )}
             </header>
+            <ToastContainer position="top-right" autoClose={5000} />
         </>
     );
 };

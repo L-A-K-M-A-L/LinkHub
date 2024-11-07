@@ -28,7 +28,7 @@ app.post('/api/register', registerUser);
 app.post('/api/login', loginUser);
 app.post('/data/dashboard', dashBoardData);
 app.get('/get/:handle', getUserData); // Corrected to handle GET requests
-app.get('/get/socials/:handle', getUserSocials);
+// app.get('/get/socials/:handle', getUserSocials);
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
