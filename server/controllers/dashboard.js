@@ -25,6 +25,7 @@ const dashBoardData = async (req, res) => {
         const userData = {
             name: user.name || 'Unknown User',
             role: user.role || 'User',
+            bio: user.bio || 'User Bio',
             avatar: user.avatar || 'https://cdn-icons-png.flaticon.com/128/924/924874.png',
             handle: user.handle || '',
             links: user.links.length,

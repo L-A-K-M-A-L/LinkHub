@@ -16,6 +16,7 @@ export default function App({ Component, pageProps }) {
   const [userData, setUserData] = useState({
     name: '',
     role: '',
+    bio: '',
     avatar: '',
     handle: ''
   });
