@@ -108,7 +108,7 @@ const Apply = () => {
         </div>
       </section>
       <Footer />
-      <ToastContainer position="top-right" autoClose={5000} />
+       
     </>
   );
 }
